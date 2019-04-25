@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link href="../css/tab_3.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;" id="link_myface">
+						<span class="mui-pull-right mui-icon mui-icon-arrowright touxiangarrow"></span>
+						<img class="mui-media-object mui-pull-right"  src="../image/face-default-cat.png" id="span_touxiangimage">
+						<div class="mui-media-body touxiangwenzi">
+							头像
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;" >
+						<span class="mui-pull-right mui-icon mui-icon-arrowright touxiangarrow"></span>
+						<span id="span_nickname" class="mui-pull-right" style="line-height: 42px; font-size: 14px;color: gray;"></span>
+						<div class="mui-media-body touxiangwenzi">
+							昵称
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<span id="span_zhanghao" class="mui-pull-right" style="line-height: 42px; font-size: 14px;color: gray;margin-right: 30px;">Jay</span>
+						<div class="mui-media-body touxiangwenzi">
+						    账号
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<span class="mui-pull-right mui-icon mui-icon-arrowright touxiangarrow"></span>
+						<img class="mui-media-object mui-pull-right qricon" src="../image/qrcode.png" id="span_qrcode">
+						<div class="mui-media-body touxiangwenzi">
+						    二维码
+						</div>
+					</a>
+				</li>
+			</ul>
+			<br />
+			<br />
+			<br />
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<div class="mui-media-body" style="text-align: center;">
+						    退出登录
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function () {
+				//获得当前的webview,刷新用户信息
+			    var curweb=plus.webview.currentWebview();
+				curweb.addEventListener("show",function(){
+					refreshUserInfo();
+				});
+				//我的头像页面跳转
+				plus.webview.create("_www/mehtml/myface.html","myface.html");
+				document.getElementById("link_myface").addEventListener('tap',function(){
+							plus.webview.show("myface.html","slide-in-right",600);
+				});
+			});
+			
+			function refreshUserInfo(){
+				var user=app.getUserGlobalInfo();
+				if(user!=null){
+					var faceimage=user.faceimage;
+					var nickname=user.nickname;
+					var username=user.username;
+					document.getElementById("span_nickname").innerHTML=nickname;
+					document.getElementById("span_zhanghao").innerHTML=username;
+					if(app.isNotNull(faceimage)){
+						var imagetou=document.getElementById("span_touxiangimage");
+						// imagetou.src=+faceimage;
+					}
+				}
+				
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-icon mui-icon-bars mui-pull-right" style="color: #333333;" id="link_to_sc"></a>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: #333333;"></a>
+			<h1 class="mui-title">我的头像</h1>
+		</header>
+		<div class="mui-content">
+				<img src="../css/registLogin/arrow.jpg" / id="imagedisplayshow">
+				
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/indexall.js"></script>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.back=function(){
+				plus.webview.currentWebview().hide("slide-out-right");
+			};
+			mui.plusReady(function () {
+				var webwdith=plus.screen.resolutionWidth;
+				var webheight=plus.screen.resolutionHeight;
+				var imageshow=document.getElementById("imagedisplayshow");
+				imageshow.style.width=webwdith-40+"px";
+				imageshow.style.height=webwdith-40+"px";
+				imageshow.style.marginLeft=20+"px";
+				imageshow.style.marginTop=(webheight/2)-(webwdith/2+20)+"px";
+				var linktosc=document.getElementById("link_to_sc")
+				linktosc.onclick=function(){
+					plus.nativeUI.actionSheet({
+						cancel:'取消',
+						buttons:[
+									{title:'选择图片',color:'#797979'},
+									{title:'下载图片',color:'#797979'}
+								]
+					},function(e){
+						var index=e.index;
+						switch(index){
+							case -1: break;
+							case 0:break;
+							case 1: select1();break;
+							case 2:	select2();break;
+						}
+					});
+				};
+				function select1(){
+// 					var w=null;
+// 					w= plus.webview.getWebviewById("photoclipindex.html");
+// 					if(w==null){
+// 						w=plus.webview.create("photoclip/index.html","photoclipindex.html");
+// 						plus.webview.show(w);	
+// 					}else{
+// 						mui.fire(w,"pageflowrefresh");
+// 						plus.webview.show(w);
+// 					}
+					mui.openWindow({
+								url:"photoclip/index.html",
+								id:"photoclipindex.html",
+								createNew:true//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+// 								show:{
+// 								  autoShow:true,//页面loaded事件发生后自动显示，默认为true
+// 								  aniShow:animationType,//页面显示动画，默认为”slide-in-right“；
+// 								  duration:animationTime//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+// 								},
+							});
+					
+				};
+				function select2(){ 
+					
+				};
+// 				mui('body').on('shown','.mui-popover',function(){
+// 					
+// 				});
+// 				mui('body').on('hidden','.mui-popover',function(){
+// 					plus.navigator.setStatusBarBackground("#F9F9F9");
+// 					plus.navigator.setStatusBarStyle("dark");
+// 				});
+				
+			    
+			})
+		</script>
+	</body>
+
+</html>

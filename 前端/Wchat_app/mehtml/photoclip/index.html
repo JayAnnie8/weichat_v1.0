@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+<title>PhotoClip</title>
+<link rel="stylesheet" href="../../css/mui.css" />
+</head>
+<body ontouchstart="">
+<header class="mui-bar mui-bar-nav">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: #242424;"></a>
+	<a class="mui-pull-right mui-icon mui-icon-upload" style="color: #242424;" id="clipBtn"></a>
+	<h1 class="mui-title">个人头像</h1>
+</header>
+<div class="mui-content" style="text-align: center;">
+	<div id="clipArea"></div>
+</div>
+
+<script src="js/hammer.min.js"></script>
+<script src="js/iscroll-zoom-min.js"></script>
+<script src="js/lrz.all.bundle.js"></script>
+<script src="js/PhotoClip.js"></script>
+<script src="../../js/app.js"></script>
+<script src="../../js/mui.js"></script>
+
+<script>
+	mui.init();
+	mui.plusReady(function () {
+			//设置截取页面是的宽高
+			var webwidth=plus.screen.resolutionWidth;
+			var webheight=plus.screen.resolutionHeight;
+			document.getElementById("clipArea").style.width=webwidth+"px";
+			document.getElementById("clipArea").style.height=webheight+"px";
+			//弹出选择对话框
+			plus.nativeUI.actionSheet({
+				title:'请选择方式',
+				cancel:'取消',
+				buttons:[
+							{title:'拍照',color:'#797979',style:'destructive'},
+							{title:'在相册选择',color:'#797979',style:'destructive'}
+						]
+			},function(e){
+				var index=e.index;
+				switch(index){
+					case -1:plus.webview.currentWebview().close(); break;
+					case 0:plus.webview.currentWebview().close();break;
+					case 1: CamerImge();break;
+					case 2:	SelectImage();break;
+				}
+			});
+// 		window.addEventListener("pageflowrefresh", function (e) {
+// 				location.reload();
+// 		});
+	});
+	//选择调用系统相册获取图片
+	function SelectImage(){
+		plus.gallery.pick(function(path){
+				var pc=showimage(path);
+				document.getElementById("clipBtn").onclick=function(){
+					var base64=pc.clip();
+					var status1=updateimage(base64,pc);
+				};
+				
+		},function(error){
+			console.log(error.message);
+			alert("选择图片失败");
+			plus.webview.currentWebview().close();
+		});
+	}
+	
+	//调用照相机实现图片剪切
+	function CamerImge(){
+		var cmr = plus.camera.getCamera();
+		cmr.captureImage( function( path ){
+				// alert( "Capture image success: " + path );
+				var pathrea=plus.io.convertLocalFileSystemURL(path);
+				  var pc=showimage(pathrea);
+				  document.getElementById("clipBtn").onclick=function(){
+				  	var base64=pc.clip();
+				  	var status1=updateimage(base64,pc);
+				  };
+			},
+			function( error ) {
+				alert( "Capture image failed: " + error.message );
+			},
+			{filename:'_doc/camera/'}
+		);
+	}
+	
+	//photoclip调用该函数实现图片裁切
+	function showimage(imageurl){
+			var pc = new PhotoClip('#clipArea', {
+			size: [200, 200],
+			outputSize: 640,
+			//adaptive: ['60%', '80%'],
+			// file: '#file',
+			// view: '#yulan',
+			// ok: '#clipBtn',
+			img: imageurl,
+			loadStart: function() {
+				plus.nativeUI.showWaiting( "加载中..." );
+			},
+			loadComplete: function() {
+				plus.nativeUI.closeWaiting();
+			},
+// 			done: function(dataURL) {
+// 				updateimage(dataURL);
+// 				pc.clear();
+// 				pc.destroy();
+// 				plus.webview.currentWebview().close();
+// 						
+// 			},
+			fail: function(msg) {
+				alert(msg);
+			}
+		});
+		return pc;
+		// 加载的图片
+// 		 	pc.load(imageurl);
+//  		 pc.clear();
+//  		 pc.destroy();
+}
+function updateimage(baseimagurl,pc){
+			mui.ajax(app.serverUrl + "/u/uploadFaceBase64",{
+					data:{
+						userid:app.getUserGlobalInfo().id,
+						facebace64:baseimagurl
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{'Content-Type':'application/json'},	              
+					success:function(data){
+						if (data.status == 200) {
+								console.log("有发送");
+								// app.setUserGlobalInfo(data.data);
+								pc.destroy();
+								plus.webview.currentWebview().close();
+						} else {
+							app.showToast(data.msg, "error");
+						}
+					}
+				});
+	}
+	
+	
+</script>
+</body>
+</html>

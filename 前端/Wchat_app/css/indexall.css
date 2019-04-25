@@ -1,0 +1,9 @@
+.mui-bar .des:active{opacity: 1;}
+.head-title{
+	line-height: 44px;
+	font-size: 17px;
+	font-weight: 500;
+}
+.mui-bar .mui-tab-item.mui-active{
+	color: #2BA245;
+}
